@@ -60,7 +60,7 @@ jobs:
             echo "Jest test failed"
             exit 1
           else
-            echo "Jest test completed successfully."
+            echo "Jest test was completed successfully."
           fi
 
       - name: Build project
