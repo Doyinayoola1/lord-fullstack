@@ -49,7 +49,7 @@ jobs:
             echo "prettier check failed"
             exit 1
           else
-            echo "prettier checks completed and updated."
+            echo "prettier checks was completed and updated."
           fi
 
       - name: Run tests using Jest
