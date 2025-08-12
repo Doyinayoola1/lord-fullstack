@@ -1,0 +1,34 @@
+name: Pull Request Checks
+
+on:
+    pull_request:
+        branches:
+        - development
+        - staging
+        - production
+
+jobs:
+    PR_checks:
+        name: Checks for Pull Requests
+        runs-on: ubuntu-latest
+        steps:
+            - name: checkout code
+              uses: actions/checkout@v5
+
+            - name: Check PR merge conflicts
+            # this checks the direction of the PR
+              run: |
+
+                echo "Target branch : ${{ github.base_ref }} and Source branch : ${{ github.head_ref }}"
+                if ${{ github.base_ref}} == 'development' && ${{ github.head_ref }} != 'main'; then
+                    echo "You can only create a pull request from main to development."
+                    exit 1
+
+                elif ${{ github.base_ref}} == 'staging' && ${{ github.head_ref }} != 'development'; then
+                    echo "You can only create a pull request from development to staging."
+                    exit 1
+
+                elif ${{ github.base_ref}} == 'production' && ${{ github.head_ref }} != 'staging'; then
+                    echo "You can only create a pull request from staging to production."
+                    exit 1
+                fi
