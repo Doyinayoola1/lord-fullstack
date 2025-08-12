@@ -6,6 +6,9 @@ on:
       - development
       - staging
       - production
+  push:
+    branches:
+      - main
 
 jobs:
   build:
