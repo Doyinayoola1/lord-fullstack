@@ -33,4 +33,4 @@ jobs:
                     exit 1
                 fi
 
-                echo "The pull request is valid and can be merged."
+                echo "The pull request is valid and the merge from ${{ github.head_ref }} --> ${{ github.base_ref }} can be made"
