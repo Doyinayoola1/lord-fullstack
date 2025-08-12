@@ -32,3 +32,5 @@ jobs:
                     echo "You can only create a pull request from staging to production."
                     exit 1
                 fi
+
+                echo "The pull request is valid and can be merged."
