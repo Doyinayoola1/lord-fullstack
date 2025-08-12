@@ -1,0 +1,70 @@
+name: CICD Pipeline
+
+on: 
+  pull_request:
+    branches:
+      - development
+      - staging
+      - production
+
+jobs:
+  build:
+    name: Build and analyze
+    
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+     
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '15'
+      
+      - name: Install dependencies
+        run: |
+          if ! npm install; then
+            echo "Dependencies installation failed"
+            exit 1
+          else
+            echo "Dependencies installed successfully."
+          fi
+
+      - name: Run linter using ESLint
+        run: |
+          if ! npm run lint; then
+            echo "lint failed"
+            exit 1
+          else
+            echo "lint completed successfully."
+          fi
+
+      - name: Run formatter using Prettier
+        run: |
+          if ! npm run prettier-write; then
+            echo "prettier check failed"
+            exit 1
+          else
+            echo "prettier checks completed and updated."
+          fi
+
+      - name: Run tests using Jest
+        env: 
+          CI: true
+        run: |
+          if ! npm run test; then
+            echo "Jest test failed"
+            exit 1
+          else
+            echo "Jest test completed successfully."
+          fi
+
+      - name: Build project
+        run: |
+          if ! npm run build; then
+            echo "Build was unsuccessful"
+            exit 1
+          else
+            echo "Build completed successfully."
+          fi
