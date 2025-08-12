@@ -66,7 +66,7 @@ jobs:
       - name: Build project
         run: |
           if ! npm run build; then
-            echo "Build was unsuccessful"
+            echo "Build was not successful"
             exit 1
           else
             echo "Build completed successfully."
