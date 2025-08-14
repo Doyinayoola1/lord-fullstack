@@ -1,6 +1,6 @@
 #This is the s3 bucket module for the site hosting
-resource "aws_s3_bucket" "site_bucket" {
-  bucket = "site_bucket_${var.mod_environ}"
+resource "aws_s3_bucket" "site-bucket" {
+  bucket = "site-bucket-${var.mod_environ}"
 
   force_destroy = true
 
@@ -10,10 +10,10 @@ resource "aws_s3_bucket" "site_bucket" {
   }
 }
 
-resource "aws_s3_bucket_logging" "site_logging" {
-  bucket = aws_s3_bucket.site_bucket.id
+resource "aws_s3_bucket_logging" "site-logging" {
+  bucket = aws_s3_bucket.site-bucket.id
 
-  target_bucket = aws_s3_bucket.log_bucket.id
+  target_bucket = aws_s3_bucket.log-bucket.id
   target_prefix = "log/"
 }
 
@@ -32,10 +32,10 @@ resource "aws_s3_bucket_logging" "site_logging" {
 #     }
 #   }
 # }
-data "aws_caller_identity" "cloudfront_site" {}
+data "aws_caller_identity" "cloudfront-site" {}
 
-resource "aws_s3_bucket_policy" "site_policy" {
-  bucket = aws_s3_bucket.site_bucket.id
+resource "aws_s3_bucket_policy" "site-policy" {
+  bucket = aws_s3_bucket.site-bucket.id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -45,10 +45,10 @@ resource "aws_s3_bucket_policy" "site_policy" {
         Effect    = "Allow"
         Principal = { Service : "cloudfront.amazonaws.com" },
         Action    = ["s3:GetObject"]
-        Resource  = "${aws_s3_bucket.site_bucket.arn}/*"
+        Resource  = "${aws_s3_bucket.site-bucket.arn}/*"
         condition = {
           StringEquals = {
-            "AWS:SourceArn" = "arn:aws:cloudfront::${data.aws_caller_identity.cloudfront_site.account_id}:distribution/${aws_cloudfront_distribution.s3_distribution.id}"
+            "AWS:SourceArn" = "arn:aws:cloudfront::${data.aws_caller_identity.cloudfront-site.account_id}:distribution/${aws_cloudfront_distribution.s3-distribution.id}"
           }
         }
       }
@@ -56,15 +56,15 @@ resource "aws_s3_bucket_policy" "site_policy" {
   })
 }
 
-resource "aws_s3_bucket_versioning" "site_versioning" {
-  bucket = aws_s3_bucket.site_bucket.id
+resource "aws_s3_bucket_versioning" "site-versioning" {
+  bucket = aws_s3_bucket.site-bucket.id
   versioning_configuration {
     status = "Enabled"
   }
 }
 
-resource "aws_s3_bucket_website_configuration" "site_website" {
-  bucket = aws_s3_bucket.site_bucket.id
+resource "aws_s3_bucket_website_configuration" "site-website" {
+  bucket = aws_s3_bucket.site-bucket.id
 
   index_document {
     suffix = "index.html"
@@ -75,8 +75,8 @@ resource "aws_s3_bucket_website_configuration" "site_website" {
   }
 }
 
-resource "aws_s3_bucket" "log_bucket" {
-  bucket = "log_bucket_${var.mod_environ}"
+resource "aws_s3_bucket" "log-bucket" {
+  bucket = "log-bucket-${var.mod_environ}"
 
   force_destroy = false
 
@@ -86,21 +86,21 @@ resource "aws_s3_bucket" "log_bucket" {
 
 }
 
-resource "aws_s3_bucket_acl" "log_acl" {
-  bucket = aws_s3_bucket.log_bucket.id
+resource "aws_s3_bucket_acl" "log-acl" {
+  bucket = aws_s3_bucket.log-bucket.id
 
   acl = "log-delivery-write"
 }
 
-resource "aws_s3_bucket_versioning" "log_versioning" {
-  bucket = aws_s3_bucket.log_bucket.id
+resource "aws_s3_bucket_versioning" "log-versioning" {
+  bucket = aws_s3_bucket.log-bucket.id
   versioning_configuration {
     status = "Enabled"
   }
 }
 
 resource "aws_s3_object" "site_html" {
-  bucket = aws_s3_bucket.site_bucket.id
+  bucket = aws_s3_bucket.site-bucket.id
   key    = "index.html"
   source = "../public/index.html"
   content_type = "text/html"
@@ -111,8 +111,8 @@ resource "aws_s3_object" "site_html" {
   } 
 }
 
-resource "aws_s3_bucket" "s3_state_bucket" {
-  bucket = "s3_state_bucket_${var.mod_environ}"
+resource "aws_s3_bucket" "s3-state-bucket" {
+  bucket = "s3-state-bucket-${var.mod_environ}"
 
   force_destroy = false
 
@@ -122,25 +122,25 @@ resource "aws_s3_bucket" "s3_state_bucket" {
   
 }
 
-resource "aws_s3_bucket_versioning" "s3_state_versioning" {
-  bucket = aws_s3_bucket.s3_state_bucket.id
+resource "aws_s3_bucket_versioning" "s3-state-versioning" {
+  bucket = aws_s3_bucket.s3-state-bucket.id
   versioning_configuration {
     status = "Enabled"
   }
 }
 
-resource "aws_s3_bucket_public_access_block" "state_block" {
-  bucket                  = aws_s3_bucket.s3_state_bucket.id
+resource "aws_s3_bucket_public_access_block" "state-block" {
+  bucket                  = aws_s3_bucket.s3-state-bucket.id
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
 
-data "aws_caller_identity" "s3_state" {}
+data "aws_caller_identity" "s3-state" {}
 
-resource "aws_s3_bucket_policy" "s3_state_policy" {
-  bucket = aws_s3_bucket.s3_state_bucket.id
+resource "aws_s3_bucket_policy" "s3-state-policy" {
+  bucket = aws_s3_bucket.s3-state-bucket.id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -148,11 +148,11 @@ resource "aws_s3_bucket_policy" "s3_state_policy" {
       {
         Sid       = "AllowS3AccessForTerraform"
         Effect    = "Allow"
-        Principal = { AWS : "arn:aws:iam::${data.aws_caller_identity.s3_state.account_id}:root" },
+        Principal = { AWS : "arn:aws:iam::${data.aws_caller_identity.s3-state.account_id}:root" },
         Action    = ["s3:*"]
         Resource  = [
-          "${aws_s3_bucket.s3_state_bucket.arn}",
-          "${aws_s3_bucket.s3_state_bucket.arn}/*"
+          "${aws_s3_bucket.s3-state-bucket.arn}",
+          "${aws_s3_bucket.s3-state-bucket.arn}/*"
         ]
       }
     ]
