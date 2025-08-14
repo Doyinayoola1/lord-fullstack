@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "aws" {
-  # Configuration options
+  # Configuration options for provider
   region = var.region
   }
 

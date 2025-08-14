@@ -1,21 +1,8 @@
-resource "aws_s3_bucket" "b" {
-  bucket = "mybucket"
-
-  tags = {
-    Name = "My bucket"
-  }
-}
-
-resource "aws_s3_bucket_acl" "b_acl" {
-  bucket = aws_s3_bucket.b.id
-  acl    = "private"
-}
-
-resource "aws_cloudfront_distribution" "s3_distribution" {
+resource "aws_cloudfront_distribution" "s3-distribution" {
   origin {
-    domain_name              = aws_s3_bucket.site_bucket.bucket_regional_domain_name
-    origin_access_control_id = aws_cloudfront_origin_access_control.site_oac.id
-    origin_id                = "s3_site_buket_${var.mod_environ}"
+    domain_name              = aws_s3_bucket.site-bucket.bucket_regional_domain_name
+    origin_access_control_id = aws_cloudfront_origin_access_control.site-oac.id
+    origin_id                = "s3-site-bucket-${var.mod_environ}"
 
     s3_origin_config {
       origin_access_identity = "" # Not needed when using OAC
@@ -31,7 +18,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "site_bucket_${var.mod_environ}"
+    target_origin_id = "s3-site-bucket-${var.mod_environ}"
 
     forwarded_values {
       query_string = false
@@ -47,12 +34,12 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     max_ttl                = 86400
   }
 
-  # Cache behavior with precedence 0
+  # Cache behavior with precedence 0.0
   ordered_cache_behavior {
     path_pattern     = "*.html"
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "s3_site_buket_${var.mod_environ}"
+    target_origin_id = "s3-site-bucket-${var.mod_environ}"
 
     forwarded_values {
       query_string = false
@@ -86,8 +73,8 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
 }
 
-resource "aws_cloudfront_origin_access_control" "site_oac" {
-  name                              = "site_oac"
+resource "aws_cloudfront_origin_access_control" "site-oac" {
+  name                              = "site-oac"
   description                       = "OAC for accessing s3"
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"

@@ -3,8 +3,8 @@ name: CICD Pipeline
 on: 
   pull_request:
     branches:
-      - development
-      - staging
+      #- development
+      #- staging
       - production
   # push:
   #   branches:
