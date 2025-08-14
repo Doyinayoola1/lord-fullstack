@@ -2,7 +2,7 @@ resource "aws_cloudfront_distribution" "s3-distribution" {
   origin {
     domain_name              = aws_s3_bucket.site-bucket.bucket_regional_domain_name
     origin_access_control_id = aws_cloudfront_origin_access_control.site-oac.id
-    origin_id                = "s3-site-buket-${var.mod_environ}"
+    origin_id                = "s3-site-bucket-${var.mod_environ}"
 
     s3_origin_config {
       origin_access_identity = "" # Not needed when using OAC
@@ -18,7 +18,7 @@ resource "aws_cloudfront_distribution" "s3-distribution" {
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "site-bucket-${var.mod_environ}"
+    target_origin_id = "s3-site-bucket-${var.mod_environ}"
 
     forwarded_values {
       query_string = false
