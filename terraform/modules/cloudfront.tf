@@ -34,7 +34,7 @@ resource "aws_cloudfront_distribution" "s3-distribution" {
     max_ttl                = 86400
   }
 
-  # Cache behavior with precedence 0
+  # Cache behavior with precedence 0.0
   ordered_cache_behavior {
     path_pattern     = "*.html"
     allowed_methods  = ["GET", "HEAD"]
