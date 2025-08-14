@@ -1,6 +1,6 @@
 resource "aws_cloudfront_distribution" "s3-distribution" {
   origin {
-    domain_name              = aws_s3_bucket.site_bucket.bucket_regional_domain_name
+    domain_name              = aws_s3_bucket.site-bucket.bucket_regional_domain_name
     origin_access_control_id = aws_cloudfront_origin_access_control.site-oac.id
     origin_id                = "s3-site-buket-${var.mod_environ}"
 
