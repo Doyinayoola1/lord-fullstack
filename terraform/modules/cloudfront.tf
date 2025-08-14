@@ -39,7 +39,7 @@ resource "aws_cloudfront_distribution" "s3-distribution" {
     path_pattern     = "*.html"
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "s3-site-buket-${var.mod_environ}"
+    target_origin_id = "s3-site-bucket-${var.mod_environ}"
 
     forwarded_values {
       query_string = false
