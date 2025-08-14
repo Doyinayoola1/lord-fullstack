@@ -46,7 +46,7 @@ resource "aws_s3_bucket_policy" "site-policy" {
         Principal = { Service : "cloudfront.amazonaws.com" },
         Action    = ["s3:GetObject"]
         Resource  = "${aws_s3_bucket.site-bucket.arn}/*"
-        condition = {
+        Condition = {
           StringEquals = {
             "AWS:SourceArn" = "arn:aws:cloudfront::${data.aws_caller_identity.cloudfront-site.account_id}:distribution/${aws_cloudfront_distribution.s3-distribution.id}"
           }
