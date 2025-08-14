@@ -20,7 +20,7 @@ jobs:
               run: |
 
                 echo "Target branch : ${{ github.base_ref }} and Source branch : ${{ github.head_ref }}"
-                if [[ ${{ github.base_ref}} == 'development' && ${{ github.head_ref }} != 'feature' ]]; then
+                if [[ ${{ github.base_ref}} == 'development' && ${{ github.head_ref }} != 'main' ]]; then
                     echo "You can only create a pull request from main to development."
                     exit 1
 

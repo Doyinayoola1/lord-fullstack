@@ -8,15 +8,15 @@ terraform {
 }
 
 provider "aws" {
-  region = var.aws_region
+  # Configuration options
+  region = var.region
+  }
+
+
+module "s3_cloudfront" {
+  source = "./modules"
+
+  mod_region = var.region
+  mod_environ = var.environ
+  
 }
-
-module "site-modules" {
-  source       = "./modules"
-  region       = var.aws_region
-  lisa-env     = var.lisa-environment
-  lisa-s3-site = var.lisa-s3-bucket-site
-  lisa-s3-logs = var.lisa-s3-bucket-log
-}
-
-
