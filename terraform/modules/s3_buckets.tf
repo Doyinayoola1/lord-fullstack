@@ -34,7 +34,7 @@ resource "aws_s3_bucket_logging" "site_logging" {
 # }
 data "aws_caller_identity" "cloudfront_site" {}
 
-resource "aws_bucket_policy" "site_policy" {
+resource "aws_s3_bucket_policy" "site_policy" {
   bucket = aws_s3_bucket.site_bucket.id
 
   policy = jsonencode({
@@ -148,7 +148,7 @@ resource "aws_s3_bucket_policy" "s3_state_policy" {
       {
         Sid       = "AllowS3AccessForTerraform"
         Effect    = "Allow"
-        Principal = { AWS : "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root" },
+        Principal = { AWS : "arn:aws:iam::${data.aws_caller_identity.s3_state.account_id}:root" },
         Action    = ["s3:*"]
         Resource  = [
           "${aws_s3_bucket.s3_state_bucket.arn}",
