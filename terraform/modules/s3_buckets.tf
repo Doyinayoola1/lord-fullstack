@@ -94,7 +94,7 @@ resource "aws_s3_bucket_public_access_block" "block" {
   restrict_public_buckets = true
 }
 
-resource "aws_s3_bucket_policy" "site-policy" {
+resource "aws_s3_bucket_policy" "log-site-policy" {
   bucket = aws_s3_bucket.log-bucket.id
 
   policy = jsonencode({
