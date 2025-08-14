@@ -86,10 +86,29 @@ resource "aws_s3_bucket" "log-bucket" {
 
 }
 
-resource "aws_s3_bucket_acl" "log-acl" {
+resource "aws_s3_bucket_public_access_block" "block" {
+  bucket                  = aws_s3_bucket.log-bucket.id
+  block_public_acls       = true
+  ignore_public_acls      = true
+  block_public_policy     = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_policy" "site-policy" {
   bucket = aws_s3_bucket.log-bucket.id
 
-  acl = "log-delivery-write"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "AllowCloudFrontAccess"
+        Effect    = "Allow"
+        Principal = { AWS: "arn:aws:iam::${data.aws_caller_identity.cloudfront-site.account_id}:root" },
+        Action    = ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"]
+        Resource  = "${aws_s3_bucket.log-bucket.arn}/*"
+        }
+    ]
+  })
 }
 
 resource "aws_s3_bucket_versioning" "log-versioning" {
