@@ -36,7 +36,7 @@ data "aws_caller_identity" "cloudfront-site" {}
 
 resource "aws_s3_bucket_policy" "site-policy" {
   bucket = aws_s3_bucket.site-bucket.id
-
+  depends_on = [aws_cloudfront_distribution.s3-distribution]
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
