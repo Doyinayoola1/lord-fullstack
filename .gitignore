@@ -25,3 +25,6 @@ docs/
 
 #terraform providers
 terraform/.terraform/providers
+
+#bootstap providers
+terraform/bootstrap/.terraform/providers
