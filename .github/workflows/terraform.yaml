@@ -34,9 +34,9 @@ jobs:
 
             - name: Terraform Plan
               working-directory: terraform
-              run: terraform plan -var-file=env/${{ github.base_ref }}.tfvars
+              run: terraform plan -var-file=env/${{ github.base_ref }}.tfvars -backend-config=env/backend-${{ github.base_ref }}.tfvars
 
             - name: Terraform Apply
               working-directory: terraform
-              if: github.event_name == 'pull_request' && github.event.action == 'opened'
-              run: terraform apply -auto-approve -var-file=env/${{ github.base_ref }}.tfvars
+              if: github.event_name == 'pull_request' && github.event.action == 'opened' #checks that it is a pull request, and the PR is a new one
+              run: terraform apply -auto-approve -var-file=env/${{ github.base_ref }}.tfvars -backend-config=env/backend-${{ github.base_ref }}.tfvars
