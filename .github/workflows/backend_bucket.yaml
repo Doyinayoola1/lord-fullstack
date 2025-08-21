@@ -29,6 +29,11 @@ jobs:
             echo "exists=false" >> $GITHUB_ENV
           fi
 
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+            terraform_version: 1.5.7
+
       - name: Create S3 bucket if it does not exist
         working-directory: terraform/bootstrap
         if: env.exists == 'false'
