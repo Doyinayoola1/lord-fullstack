@@ -1,1 +1,1 @@
-region = "eu-north-1"
+bootstrap_region = "eu-north-1"

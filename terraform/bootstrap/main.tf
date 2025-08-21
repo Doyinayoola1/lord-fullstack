@@ -12,7 +12,7 @@ terraform {
 
 provider "aws" {
   # Configuration options for provider
-  region = var.bootsrap_region
+  region = var.bootstrap_region
   }
 
 resource "aws_s3_bucket" "s3-state-bucket" {
