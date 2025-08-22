@@ -79,6 +79,10 @@ resource "aws_s3_bucket_public_access_block" "block" {
   restrict_public_buckets = true
 }
 
+data "aws_caller_identity" "current" {}
+data "aws_iam_session_context" "sess" { arn = data.aws_caller_identity.current.arn }
+
+
 resource "aws_s3_bucket_policy" "log-site-policy" {
   bucket = aws_s3_bucket.log-bucket.id
 
@@ -96,6 +100,16 @@ resource "aws_s3_bucket_policy" "log-site-policy" {
         #     "aws:SourceArn" = "aws_cloudfront_distribution.s3-distribution.arn"
         #   }
         # }
+      },
+      {
+        Sid: "CIWriteLogs",
+        Effect: "Allow",
+        Principal: { AWS = data.aws_iam_session_context.sess.issuer_arn }, # the role your workflow assumed
+        Action: ["s3:PutObject","s3:GetObject","s3:ListBucket"],
+        Resource: [
+          aws_s3_bucket.log-bucket.arn,
+          "${aws_s3_bucket.log-bucket.arn}/*"
+        ]
       }
     ]
   })
@@ -120,41 +134,41 @@ resource "aws_s3_object" "site_html" {
   } 
 }
 
-data "aws_caller_identity" "current" {}
+# data "aws_caller_identity" "current" {}
 
-#gets the current user name from the aws id
-data "aws_iam_user" "current_user" {
-  user_name = data.aws_caller_identity.current.user_id
-}
+# #gets the current user name from the aws id
+# data "aws_iam_user" "current_user" {
+#   user_name = data.aws_caller_identity.current.user_id
+# }
 
-resource "aws_iam_policy" "logging-policy" {
-  name        = "logging-policy"
-  path        = "/"
-  description = "My logging policy"
+# resource "aws_iam_policy" "logging-policy" {
+#   name        = "logging-policy"
+#   path        = "/"
+#   description = "My logging policy"
 
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = [
-          "s3:ListBucket",
-        ]
-        Effect   = "Allow"
-        Resource = "arn:aws:s3:::${aws_s3_bucket.log-bucket.id}"
-      },
-      {
-        Action = [
-          "s3:GetObject",
-        ]
-        Effect   = "Allow"
-        Resource = "arn:aws:s3:::${aws_s3_bucket.log-bucket.id}/*"
-      }
-    ]
-  })
-}
+#   policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Action = [
+#           "s3:ListBucket",
+#         ]
+#         Effect   = "Allow"
+#         Resource = "arn:aws:s3:::${aws_s3_bucket.log-bucket.id}"
+#       },
+#       {
+#         Action = [
+#           "s3:GetObject",
+#         ]
+#         Effect   = "Allow"
+#         Resource = "arn:aws:s3:::${aws_s3_bucket.log-bucket.id}/*"
+#       }
+#     ]
+#   })
+# }
 
 #This policy that allows the IAM user to access the logging bucket
-resource "aws_iam_user_policy_attachment" "log-policy-attachment" {
-  user       = data.aws_iam_user.current_user.user_name
-  policy_arn = aws_iam_policy.logging-policy.arn
-}
+# resource "aws_iam_user_policy_attachment" "log-policy-attachment" {
+#   user       = data.aws_iam_user.current_user.user_name
+#   policy_arn = aws_iam_policy.logging-policy.arn
+# }
