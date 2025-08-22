@@ -17,21 +17,6 @@ resource "aws_s3_bucket_logging" "site-logging" {
   target_prefix = "log/"
 }
 
-# resource "aws_s3_bucket_acl" "site_acl" {
-#   bucket = aws_s3_bucket.site_bucket.id
-#   access_control_policy {
-#     grant {
-#       grantee {
-#         id   = data.aws_canonical_user_id.current.id
-#         type = "CanonicalUser"
-#       }
-#       permission = "READ"
-#     }
-#     owner {
-#       id = data.aws_canonical_user_id.current.id
-#     }
-#   }
-# }
 data "aws_caller_identity" "cloudfront-site" {}
 
 resource "aws_s3_bucket_policy" "site-policy" {
@@ -106,7 +91,14 @@ resource "aws_s3_bucket_policy" "log-site-policy" {
         Principal = { AWS: "arn:aws:iam::${data.aws_caller_identity.cloudfront-site.account_id}:root" },
         Action    = ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"]
         Resource  = "${aws_s3_bucket.log-bucket.arn}/*"
-        }
+        },
+      {
+        Sid = "Allowloggingaccess"
+        Effect = "Allow"
+        Principal = { Service: "logging.s3.amazonaws.com" },
+        Action = ["s3:PutObject"]
+        Resource = "${aws_s3_bucket.log-bucket.arn}/log/*"
+      }
     ]
   })
 }
