@@ -85,19 +85,17 @@ resource "aws_s3_bucket_policy" "log-site-policy" {
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
-      {
-        Sid       = "AllowCloudFrontAccess"
-        Effect    = "Allow"
-        Principal = { AWS: "arn:aws:iam::${data.aws_caller_identity.cloudfront-site.account_id}:root" },
-        Action    = ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"]
-        Resource  = "${aws_s3_bucket.log-bucket.arn}/*"
-        },
-      {
+       {
         Sid = "Allowloggingaccess"
         Effect = "Allow"
         Principal = { Service: "logging.s3.amazonaws.com" },
         Action = ["s3:PutObject"]
         Resource = "${aws_s3_bucket.log-bucket.arn}/log/*"
+        # Condition = {
+        #   StringEquals = {
+        #     "aws:SourceArn" = "aws_cloudfront_distribution.s3-distribution.arn"
+        #   }
+        # }
       }
     ]
   })
@@ -122,3 +120,35 @@ resource "aws_s3_object" "site_html" {
   } 
 }
 
+data "aws_caller_identity" "current" {}
+
+resource "aws_iam_policy" "logging-policy" {
+  name        = "logging-policy"
+  path        = "/"
+  description = "My logging policy"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "s3:ListBucket",
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:s3:::${aws_s3_bucket.log-bucket.id}"
+      },
+      {
+        Action = [
+          "s3:GetObject",
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:s3:::${aws_s3_bucket.log-bucket.id}/*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_user_policy_attachment" "log-policy-attachment" {
+  user       = data.aws_caller_identity.current.user_id
+  policy_arn = aws_iam_policy.logging-policy.arn
+}
