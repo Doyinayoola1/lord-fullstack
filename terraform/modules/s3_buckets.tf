@@ -148,6 +148,7 @@ resource "aws_iam_policy" "logging-policy" {
   })
 }
 
+#This policy that allows the IAM user to access the logging bucket
 resource "aws_iam_user_policy_attachment" "log-policy-attachment" {
   user       = data.aws_caller_identity.current.user_id
   policy_arn = aws_iam_policy.logging-policy.arn
