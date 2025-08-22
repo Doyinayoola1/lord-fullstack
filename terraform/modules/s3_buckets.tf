@@ -122,6 +122,11 @@ resource "aws_s3_object" "site_html" {
 
 data "aws_caller_identity" "current" {}
 
+#gets the current user name from the aws id
+data "aws_iam_user" "current_user" {
+  user_name = data.aws_caller_identity.current.user_id
+}
+
 resource "aws_iam_policy" "logging-policy" {
   name        = "logging-policy"
   path        = "/"
@@ -150,6 +155,6 @@ resource "aws_iam_policy" "logging-policy" {
 
 #This policy that allows the IAM user to access the logging bucket
 resource "aws_iam_user_policy_attachment" "log-policy-attachment" {
-  user       = data.aws_caller_identity.current.user_id
+  user       = data.aws_iam_user.current_user.user_name
   policy_arn = aws_iam_policy.logging-policy.arn
 }
