@@ -4,12 +4,6 @@ resource "aws_s3_bucket" "site-bucket" {
 
   force_destroy = true
 
-  depends_on = [
-    aws_s3_bucket_logging.site-logging,
-    aws_s3_bucket_policy.log-site-policy
-    #this ensures that site-logging is disabled and policy is updated. fully updated new
-  ]
-
   tags = {
     Name        = "My bucket"
     Environment = "${var.mod_environ}"
@@ -26,6 +20,7 @@ resource "aws_s3_bucket_logging" "site-logging" {
 
 data "aws_caller_identity" "cloudfront-site" {}
 
+#policy allows only cloudfront to access the s3 bucket
 resource "aws_s3_bucket_policy" "site-policy" {
   bucket = aws_s3_bucket.site-bucket.id
   depends_on = [aws_cloudfront_distribution.s3-distribution]
