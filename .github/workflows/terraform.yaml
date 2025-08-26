@@ -39,5 +39,5 @@ jobs:
             - name: Terraform Apply
               working-directory: terraform
               if: github.event_name == 'pull_request' && github.event.action == 'opened' #checks that it is a pull request, and the PR is a new one
-              run: terraform destroy -auto-approve -var-file=env/${{ github.base_ref }}.tfvars 
-             #run: terraform apply -auto-approve -var-file=env/${{ github.base_ref }}.tfvars 
+              #run: terraform destroy -auto-approve -var-file=env/${{ github.base_ref }}.tfvars 
+              run: terraform apply -auto-approve -var-file=env/${{ github.base_ref }}.tfvars 
