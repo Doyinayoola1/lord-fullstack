@@ -7,7 +7,7 @@ resource "aws_s3_bucket" "site-bucket" {
   depends_on = [
     aws_s3_bucket_logging.site-logging,
     aws_s3_bucket_policy.log-site-policy
-    #this ensures that site-logging is disabled and policy is updated. fully updated
+    #this ensures that site-logging is disabled and policy is updated. fully updated new
   ]
 
   tags = {
