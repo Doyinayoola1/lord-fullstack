@@ -63,7 +63,7 @@ resource "aws_s3_bucket_website_configuration" "site-website" {
 resource "aws_s3_bucket" "log-bucket" {
   bucket = "doyin-log-bucket-${var.mod_environ}"
 
-  force_destroy = false
+  force_destroy = true
 
   tags = {
     Environment = "${var.mod_environ}"
