@@ -44,4 +44,4 @@ jobs:
             terraform plan -out=tfplan -var-file=../env/initial-s3.tfvars
             terraform apply -auto-approve tfplan
 
-            echo "Terraform applied successfully."
+            echo "Terraform backend bucket created successfully."
