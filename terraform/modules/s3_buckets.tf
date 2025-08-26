@@ -175,4 +175,4 @@ resource "aws_s3_object" "site_html" {
 #   user       = data.aws_iam_user.current_user.user_name
 #   policy_arn = aws_iam_policy.logging-policy.arn
 # }
-# new update
+# new update again
