@@ -10,13 +10,13 @@ resource "aws_s3_bucket" "site-bucket" {
   }
 }
 
-resource "aws_s3_bucket_logging" "site-logging" {
-  bucket = aws_s3_bucket.site-bucket.id
+# resource "aws_s3_bucket_logging" "site-logging" {
+#   bucket = aws_s3_bucket.site-bucket.id
 
-  target_bucket = aws_s3_bucket.log-bucket.id
-  target_prefix = "log/"
+#   target_bucket = aws_s3_bucket.log-bucket.id
+#   target_prefix = "log/"
 
-}
+# }
 
 data "aws_caller_identity" "cloudfront-site" {}
 
