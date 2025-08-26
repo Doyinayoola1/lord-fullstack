@@ -4,6 +4,12 @@ resource "aws_s3_bucket" "site-bucket" {
 
   force_destroy = true
 
+  depends_on = [
+    aws_s3_bucket_logging.site-logging,
+    aws_s3_bucket_policy.log-site-policy
+    #this ensures that site-logging is disabled and policy is updated.
+  ]
+
   tags = {
     Name        = "My bucket"
     Environment = "${var.mod_environ}"
@@ -15,6 +21,7 @@ resource "aws_s3_bucket_logging" "site-logging" {
 
   target_bucket = aws_s3_bucket.log-bucket.id
   target_prefix = "log/"
+
 }
 
 data "aws_caller_identity" "cloudfront-site" {}
@@ -105,7 +112,8 @@ resource "aws_s3_bucket_policy" "log-site-policy" {
         Sid: "CIWriteLogs",
         Effect: "Allow",
         Principal: { AWS = data.aws_iam_session_context.sess.issuer_arn }, # the role your workflow assumed
-        Action: ["s3:PutObject","s3:GetObject","s3:ListBucket"],
+        Action: ["s3:PutObject","s3:GetObject","s3:ListBucket","s3:DeleteObject","s3:DeleteObjectVersion"],
+        #added s3:delete to enable deletion of log bucket
         Resource: [
           aws_s3_bucket.log-bucket.arn,
           "${aws_s3_bucket.log-bucket.arn}/*"
